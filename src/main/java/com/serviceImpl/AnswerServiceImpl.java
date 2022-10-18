@@ -1,16 +1,21 @@
 package com.serviceImpl;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dto.AnswerDto;
+
 import com.entity.AnswerEntity;
 import com.entity.QuestionEntity;
+import com.entity.UserRoleEntity;
 import com.entity.Users;
 import com.repository.AnswerRepository;
 import com.repository.QuestionRepository;
+import com.repository.UserRoleRepository;
 import com.repository.UsersRepository;
 import com.serviceinterface.AnswerServiceInterface;
 import com.webSecurity.JwtTokenUtil;
@@ -31,6 +36,9 @@ public class AnswerServiceImpl implements AnswerServiceInterface
 	
 	@Autowired
 	private QuestionRepository questionRepository;
+	
+	@Autowired
+	private UserRoleRepository userRoleRepository;
 	
 	// Add Comment
 	@Override
@@ -55,6 +63,81 @@ public class AnswerServiceImpl implements AnswerServiceInterface
 		
 		
 	}
+	
+    // Delete comment only admin or User who have comment 
+	@Override
+	public void deleteComment(Long id, HttpServletRequest request)
+	{
+		 answerRepository.findById(id).orElseThrow(()-> 
+		    
+	     new ResourceNotFoundException("not Found answer Id.."));
+	     
+		 final String header=request.getHeader("Authorization");
+		 String requestToken=header.substring(7);
+		 final String token=jwtTokenUtil.getUsernameFromToken(requestToken);
+	        
+	     Users userEntity=usersRepository.findByEmailContainingIgnoreCase(token);
+	     UserRoleEntity userRoleEntity= userRoleRepository.findTaskRoleIdByTaskUserId(userEntity.getId());
+	     String name=userRoleEntity.getTask().getRole().getRoleName();
+	     System.out.println("Role name:"+name);
+
+		 if(name.equals("admin"))
+		 {
+			answerRepository.deleteById(id);
+		 }
+		else
+		{
+			throw new ResourceNotFoundException("Cannot Access.. Only Admin can delete commit ..");
+		}
+		 
+		AnswerEntity ans= new AnswerEntity();
+		if(userEntity.getId()==ans.getId())
+		{
+			answerRepository.deleteById(id);
+		}
+	}
+     
+	// get All Answer
+	@Override
+	public List<AnswerEntity> getAll()
+	{
+		return this.answerRepository.findAll();
+		
+	}
+	
+	
+    // get Answer id
+	@Override
+	public AnswerDto getAnswerId(Long id)
+	{
+		AnswerEntity  answerEntity=answerRepository.findById(id).orElseThrow(()->
+		new ResourceNotFoundException("not found Answer id"));
+		
+		
+		AnswerDto answerDto=new AnswerDto();
+		
+		answerDto.setComment(answerEntity.getComment());
+		answerDto.setQuestionid(id);
+		answerDto.setUserid(id);
+		return answerDto;
+		 
+	}
+
+	// Update Answer is stores in flag 
+	@Override
+	public AnswerDto updatequestion(AnswerDto answerDto, Long id)
+	{
+		AnswerEntity  answerEntity=answerRepository.findById(id).orElseThrow(()-> 
+	    new ResourceNotFoundException("Not Found Answer Id"));
+			
+		answerEntity.setComment(answerDto.getComment());
+		answerEntity.setIsflag(true);
+		answerRepository.save(answerEntity);
+		return answerDto;
+		
+	}
+ 
+	
 	
 	
 	

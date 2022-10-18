@@ -1,5 +1,7 @@
 package com.entity;
 
+
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,6 +27,8 @@ public class AnswerEntity
 	private String comment;
 	
 	private boolean isactive=true;
+	private boolean isflag=false;
+	
 	
 	
 	@OneToOne 
@@ -42,6 +46,18 @@ public class AnswerEntity
 	}
 
 	
+	
+
+	
+
+	public boolean isIsflag() {
+		return isflag;
+	}
+
+	public void setIsflag(boolean isflag) {
+		this.isflag = isflag;
+	}
+
 	public QuestionEntity getQuestion_id() {
 		return question_id;
 	}
@@ -75,14 +91,14 @@ public class AnswerEntity
 		this.user_id = user_id;
 	}
     
-
-
-
-	public AnswerEntity(long id, String comment, boolean isactive, Users user_id, QuestionEntity question_id) {
+    public AnswerEntity(long id, String comment, boolean isactive, boolean isflag, Users user_id,
+			QuestionEntity question_id) {
 		super();
 		this.id = id;
 		this.comment = comment;
 		this.isactive = isactive;
+		this.isflag = isflag;
+	
 		this.user_id = user_id;
 		this.question_id = question_id;
 	}

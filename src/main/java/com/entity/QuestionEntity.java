@@ -33,9 +33,12 @@ public class QuestionEntity
 	private Date updatedat;
 	
 	private String question;
-	
+	private boolean draft=false;
 	private boolean isactive=true;
-    
+	private boolean isflag=false;
+	
+	private Date date;
+	
 	@OneToOne 
 	private Users user_id;
 	
@@ -52,6 +55,26 @@ public class QuestionEntity
 
 	public String getDescription() {
 		return description;
+	}
+    
+    
+	public boolean isDraft() {
+		return draft;
+	}
+
+
+	public void setDraft(boolean draft) {
+		this.draft = draft;
+	}
+
+
+	public Date getDate() {
+		return date;
+	}
+
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 
@@ -90,6 +113,16 @@ public class QuestionEntity
 	}
 
 
+	public boolean isIsflag() {
+		return isflag;
+	}
+
+
+	public void setIsflag(boolean isflag) {
+		this.isflag = isflag;
+	}
+
+
 	public void setQuestion(String question) {
 		this.question = question;
 	}
@@ -112,15 +145,23 @@ public class QuestionEntity
 
 
 
-	public QuestionEntity(long id, String description, Date createdat, Date updatedat, String question,
-			boolean isactive, Users user_id) {
+  
+
+
+   
+
+	public QuestionEntity(long id, String description, Date createdat, Date updatedat, String question, boolean draft,
+			boolean isactive, boolean isflag, Date date, Users user_id) {
 		super();
 		this.id = id;
 		this.description = description;
 		this.createdat = createdat;
 		this.updatedat = updatedat;
 		this.question = question;
+		this.draft = draft;
 		this.isactive = isactive;
+		this.isflag = isflag;
+		this.date = date;
 		this.user_id = user_id;
 	}
 

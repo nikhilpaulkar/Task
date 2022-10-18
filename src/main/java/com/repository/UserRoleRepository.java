@@ -20,6 +20,8 @@ public interface UserRoleRepository extends JpaRepository< UserRoleEntity, Long>
 	@Query(value="update userrole u SET role_id=:role_id WHERE u.user_id=:user_id", nativeQuery=true)
 	void updateuserrole (@Param("user_id")Long user_id,@Param("role_id")Long role_id);
 
+	UserRoleEntity findTaskRoleIdByTaskUserId(long id);
+
 	
 
 }
