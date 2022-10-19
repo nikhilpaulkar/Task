@@ -75,11 +75,14 @@ public class QuestionServiceImpl implements QuestionServiceInterface
 	 if(name.equals("admin"))
 	 {
 		 QuestionDto questionDto=new QuestionDto();
-			
+		
+		 questionDto.setDescription(questionEntity.getDescription());
 		 
-		 questionEntity.setDescription(questionDto.getDescription());
-		 questionEntity.setQuestion(questionDto.getDescription());
-		 questionEntity.setUser_id(userEntity);
+		 questionDto.setQuestion(questionEntity.getDescription());
+		 questionDto.setUserid(userEntity.getId());
+		
+		 questionDto.setDate(questionEntity.getDate());
+		 
 		 return questionDto;
 	 }
 	else
@@ -90,35 +93,35 @@ public class QuestionServiceImpl implements QuestionServiceInterface
 	
  }
 
- // Update Question Only who post question
+ // Update Question Only who post question that user can update question
  @Override
  public QuestionDto updatequestion(QuestionDto questionDto, Long id,HttpServletRequest request)
  {
 	 QuestionEntity  questionEntity=questionRepository.findById(id).orElseThrow(()-> 
      new ResourceNotFoundException("Not Found Question Id"));
 	 
-//	 final String header=request.getHeader("Authorization");
-//	 String requestToken=header.substring(7);
-//
-//	 final String email=jwtTokenUtil.getUsernameFromToken(requestToken);
-//		   
-//	 Users user1=usersRepository.findByEmail(email);
-//	
-//	 if(user1.getId()==questionEntity.getUser_id().getId())
-//	 {
-//	 
+	 final String header=request.getHeader("Authorization");
+	 String requestToken=header.substring(7);
+
+	 final String email=jwtTokenUtil.getUsernameFromToken(requestToken);
+		   
+	 Users user1=usersRepository.findByEmail(email);
+	
+	 if(user1.getId()==questionEntity.getUser_id().getId())
+	 {
+	 
 	  questionEntity.setDescription(questionDto.getDescription());
 	  questionEntity.setQuestion(questionDto.getQuestion());
 	  questionEntity.setIsflag(true);
 	
 	  questionRepository.save(questionEntity);
 	  return questionDto;
-	 //}
-//	 else
-//	 {
-//		 throw new ResourceNotFoundException("can not Access only Who create question that users can update question ");
-//	 }
-//	
+	 }
+	 else
+	 {
+		 throw new ResourceNotFoundException("can not Access only Who create question that users can update question ");
+	 }
+	
  }
 
  

@@ -70,7 +70,7 @@ public class QuestionController
 		
 		}catch(Exception e)
 		{
-			return new ResponseEntity<>(new ErrorResponseDto("Please Enter Valid QuestionId..", "Not Updated Data.."),HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new ErrorResponseDto("Please Enter Valid QuestionId..", "Or You can not access Only who create question that user can update question"),HttpStatus.NOT_FOUND);
 		}
 				
 	}

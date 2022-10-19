@@ -68,7 +68,7 @@ public class AnswerServiceImpl implements AnswerServiceInterface
 	@Override
 	public void deleteComment(Long id, HttpServletRequest request)
 	{
-		 answerRepository.findById(id).orElseThrow(()-> 
+		  AnswerEntity ans=answerRepository.findById(id).orElseThrow(()-> 
 		    
 	     new ResourceNotFoundException("not Found answer Id.."));
 	     
@@ -77,24 +77,29 @@ public class AnswerServiceImpl implements AnswerServiceInterface
 		 final String token=jwtTokenUtil.getUsernameFromToken(requestToken);
 	        
 	     Users userEntity=usersRepository.findByEmailContainingIgnoreCase(token);
+	     if(userEntity.getId()==ans.getUser_id().getId())
+		  {
+			answerRepository.deleteById(id);
+		  }
+	     else
+	     {
+	    	 
+	     
 	     UserRoleEntity userRoleEntity= userRoleRepository.findTaskRoleIdByTaskUserId(userEntity.getId());
 	     String name=userRoleEntity.getTask().getRole().getRoleName();
 	     System.out.println("Role name:"+name);
 
 		 if(name.equals("admin"))
 		 {
+		   
 			answerRepository.deleteById(id);
-		 }
+		 } 
 		else
 		{
-			throw new ResourceNotFoundException("Cannot Access.. Only Admin can delete commit ..");
+				throw new ResourceNotFoundException("Cannot Access.. Only Admin can delete commit ..");
 		}
-		 
-		AnswerEntity ans= new AnswerEntity();
-		if(userEntity.getId()==ans.getId())
-		{
-			answerRepository.deleteById(id);
-		}
+	   }
+	     
 	}
      
 	// get All Answer
